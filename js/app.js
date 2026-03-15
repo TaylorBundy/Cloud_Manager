@@ -1,5 +1,5 @@
 const tokken =
-  "2169833758aa189fbaed095ac6091c89cb3efd2a358eae514ce3919baef686f35d5dc6493082685b74c405a96214cce5830a40669e86a51fd898431d5d3346d6";
+  "b2c9928eec86a0427964e6c062842840a793a34b66758f92537617d97675aad38f7cc32ee31a0572212c3025192e4e6067fae6e5592b14ce4802f437f8482497";
 //"8456f6c5673fd7aff3888a48aca2c1c6b3fdc24fbbe931ecdd59077a3933a955d4f2c4e0f0e0b13fedb5af0bd61968ca7d7a81c9b4500a73fd68be38be05040a";
 const NUBES = {
   drive: {
@@ -106,7 +106,7 @@ document.querySelectorAll("#btn").forEach((button) => {
   });
 });
 
-async function infoUsuario(session_token) {
+async function infoUsuario2(session_token) {
   const url =
     "https://www.mediafire.com/api/1.5/user/get_info.php" +
     "?session_token=" +
@@ -120,7 +120,56 @@ async function infoUsuario(session_token) {
   console.log(data);
 }
 
+async function infoUsuario(session_token) {
+  const url =
+    "https://www.mediafire.com/application/get_session_token.php" +
+    "&response_format=json";
+
+  const res = await fetch(url);
+
+  const data = await res.json();
+
+  console.log(data);
+}
+
+async function obtenerSessionToken() {
+  try {
+    const res = await fetch(
+      "https://www.mediafire.com/application/get_session_token.php",
+      {
+        method: "POST",
+        credentials: "include",
+      },
+    );
+
+    const data = await res.json();
+    console.log(data);
+
+    const token = data.response.session_token;
+
+    // guardar token
+    localStorage.setItem("mediafire_token", token);
+
+    console.log("Session Token:", token);
+
+    return token;
+  } catch (error) {
+    console.error("Error obteniendo token:", error);
+  }
+}
+
 //infoUsuario(tokken);
+async function iniciar() {
+  let token = localStorage.getItem("mediafire_token");
+
+  if (!token) {
+    token = await obtenerSessionToken();
+  }
+
+  console.log("Token listo:", token);
+}
+
+iniciar();
 
 async function listarArchivos2(session_token) {
   const url =
