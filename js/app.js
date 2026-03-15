@@ -1,6 +1,7 @@
-const tokken =
-  "b2c9928eec86a0427964e6c062842840a793a34b66758f92537617d97675aad38f7cc32ee31a0572212c3025192e4e6067fae6e5592b14ce4802f437f8482497";
+// const tokken =
+// "5f11dae8fe0e965c756f86c19b02a7c129d609f245245c6c3be4e35ff08f5e76100a7b6b9b0b123eeb2c2620cea03f3ecc3212c834c6d4ac07edaae38c1c0983";
 //"8456f6c5673fd7aff3888a48aca2c1c6b3fdc24fbbe931ecdd59077a3933a955d4f2c4e0f0e0b13fedb5af0bd61968ca7d7a81c9b4500a73fd68be38be05040a";
+let tokken;
 const NUBES = {
   drive: {
     name: "Google Drive",
@@ -132,44 +133,44 @@ async function infoUsuario(session_token) {
   console.log(data);
 }
 
-async function obtenerSessionToken() {
-  try {
-    const res = await fetch(
-      "https://www.mediafire.com/application/get_session_token.php",
-      {
-        method: "POST",
-        credentials: "include",
-      },
-    );
+// async function obtenerSessionToken() {
+//   try {
+//     const res = await fetch(
+//       "https://www.mediafire.com/application/get_session_token.php",
+//       {
+//         method: "POST",
+//         credentials: "include",
+//       },
+//     );
 
-    const data = await res.json();
-    console.log(data);
+//     const data = await res.json();
+//     console.log(data);
 
-    const token = data.response.session_token;
+//     const token = data.response.session_token;
 
-    // guardar token
-    localStorage.setItem("mediafire_token", token);
+//     // guardar token
+//     localStorage.setItem("mediafire_token", token);
 
-    console.log("Session Token:", token);
+//     console.log("Session Token:", token);
 
-    return token;
-  } catch (error) {
-    console.error("Error obteniendo token:", error);
-  }
-}
+//     return token;
+//   } catch (error) {
+//     console.error("Error obteniendo token:", error);
+//   }
+// }
 
 //infoUsuario(tokken);
-async function iniciar() {
-  let token = localStorage.getItem("mediafire_token");
+// async function iniciar() {
+//   let token = localStorage.getItem("mediafire_token");
 
-  if (!token) {
-    token = await obtenerSessionToken();
-  }
+//   if (!token) {
+//     token = await obtenerSessionToken();
+//   }
 
-  console.log("Token listo:", token);
-}
+//   console.log("Token listo:", token);
+// }
 
-iniciar();
+// iniciar();
 
 async function listarArchivos2(session_token) {
   const url =
@@ -433,4 +434,54 @@ async function cargarSubcarpetas(folder_key, container) {
   });
 }
 
-cargarSubcarpetas("myfiles", tree);
+const sInput = document.querySelector(".sToken");
+
+document.querySelector(".bToken").addEventListener("click", function () {
+  //cargarSubcarpetas("myfiles", tree);
+  console.log(sInput.value);
+  if (sInput.value) {
+    tokken = sInput.value;
+    cargarSubcarpetas("myfiles", tree);
+    localStorage.setItem("mfToken", tokken);
+  }
+  //tokken = document.querySelector(".sToken").ariaValueMax;
+  //cargarArchivos(tokken);
+  //console.log(this.id);
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const isToken = localStorage.getItem("mfToken");
+  if (isToken) {
+    console.log(isToken);
+    sInput.value = isToken;
+  } else {
+    window.open(
+      "https://www.mediafire.com/application/get_session_token.php",
+      "mf",
+      "width=500,height=500",
+    );
+  }
+});
+
+//cargarSubcarpetas("myfiles", tree);
+
+// window.open(
+//   "https://www.mediafire.com/application/get_session_token.php",
+//   (target = "_blank"),
+// );
+
+// window.open(
+//   "https://www.mediafire.com/application/get_session_token.php",
+//   "mf",
+//   "width=500,height=500",
+// );
+
+// async function obtenerSessionToken() {
+//   const res = await fetch("http://127.0.0.1:5000/mediafire/token");
+
+//   const data = await res.json();
+
+//   console.log(data);
+// }
+
+// obtenerSessionToken();
