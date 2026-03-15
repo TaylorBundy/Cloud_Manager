@@ -1,0 +1,144 @@
+body {
+  margin: 0;
+  font-family: sans-serif;
+
+  background: linear-gradient(150deg, #9500ff, #09f, #00ddff);
+
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  text-align: center;
+  padding: 20px;
+  color: white;
+}
+
+main {
+  flex: 1;
+  padding: 20px;
+}
+
+#clouds {
+  display: grid;
+
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+
+  gap: 20px;
+}
+
+.card {
+  background: white;
+
+  border-radius: 10px;
+
+  padding: 20px;
+
+  text-align: center;
+
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+button {
+  margin-top: 10px;
+
+  padding: 10px 15px;
+
+  border: none;
+
+  border-radius: 6px;
+
+  background: #09f;
+
+  color: white;
+
+  cursor: pointer;
+}
+
+#tablaArchivos {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+#tablaArchivos th,
+#tablaArchivos td {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  text-align: left;
+}
+
+#tablaArchivos th {
+  background: #09f;
+  color: white;
+}
+
+#tablaArchivos tr:hover {
+  background: #f5f5f5;
+}
+
+@media (max-width: 600px) {
+  #tablaArchivos {
+    font-size: 14px;
+  }
+}
+
+#tree {
+  font-family: Arial;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.tree-node {
+  margin-left: 10px;
+  width: 50%;
+}
+
+.folder {
+  cursor: pointer;
+  user-select: none;
+}
+
+.children {
+  margin-left: 20px;
+  display: none;
+}
+
+.tree-node.open > .children {
+  display: block;
+}
+
+/* #tree .tree-node:nth-child(odd) {
+  background: #f2f2f2;
+}
+
+#tree .tree-node:nth-child(even) {
+  background: #e6f2ff;
+} */
+
+.tree-node {
+  /* background: #f5f5f5; */
+  background: #37e146;
+  padding: 3px;
+  border-radius: 4px;
+}
+
+.tree-node .tree-node {
+  /* background: #e8f4ff; */
+  background: #5fa365;
+}
+
+.tree-node .tree-node .tree-node {
+  /* background: #dfffe8; */
+  background: #03bf13;
+}
+
+.folder:hover {
+  background: #023d64;
+  color: white;
+}
