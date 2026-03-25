@@ -2,6 +2,7 @@
 // "5f11dae8fe0e965c756f86c19b02a7c129d609f245245c6c3be4e35ff08f5e76100a7b6b9b0b123eeb2c2620cea03f3ecc3212c834c6d4ac07edaae38c1c0983";
 //"8456f6c5673fd7aff3888a48aca2c1c6b3fdc24fbbe931ecdd59077a3933a955d4f2c4e0f0e0b13fedb5af0bd61968ca7d7a81c9b4500a73fd68be38be05040a";
 let tokken;
+const btnCargar = document.querySelector(".bToken");
 const NUBES = {
   drive: {
     name: "Google Drive",
@@ -103,90 +104,51 @@ function connect(name) {
 document.querySelectorAll("#btn").forEach((button) => {
   button.addEventListener("click", function () {
     cargarArchivos(tokken);
-    console.log(this.id);
+    // console.log(this.id);
   });
 });
 
-async function infoUsuario2(session_token) {
-  const url =
-    "https://www.mediafire.com/api/1.5/user/get_info.php" +
-    "?session_token=" +
-    tokken +
-    "&response_format=json";
+// async function infoUsuario2(session_token) {
+//   const url =
+//     "https://www.mediafire.com/api/1.5/user/get_info.php" +
+//     "?session_token=" +
+//     tokken +
+//     "&response_format=json";
 
-  const res = await fetch(url);
+//   const res = await fetch(url);
 
-  const data = await res.json();
+//   const data = await res.json();
 
-  console.log(data);
-}
-
-async function infoUsuario(session_token) {
-  const url =
-    "https://www.mediafire.com/application/get_session_token.php" +
-    "&response_format=json";
-
-  const res = await fetch(url);
-
-  const data = await res.json();
-
-  console.log(data);
-}
-
-// async function obtenerSessionToken() {
-//   try {
-//     const res = await fetch(
-//       "https://www.mediafire.com/application/get_session_token.php",
-//       {
-//         method: "POST",
-//         credentials: "include",
-//       },
-//     );
-
-//     const data = await res.json();
-//     console.log(data);
-
-//     const token = data.response.session_token;
-
-//     // guardar token
-//     localStorage.setItem("mediafire_token", token);
-
-//     console.log("Session Token:", token);
-
-//     return token;
-//   } catch (error) {
-//     console.error("Error obteniendo token:", error);
-//   }
+//   // console.log(data);
 // }
 
-//infoUsuario(tokken);
-// async function iniciar() {
-//   let token = localStorage.getItem("mediafire_token");
+// async function infoUsuario(session_token) {
+//   const url =
+//     "https://www.mediafire.com/application/get_session_token.php" +
+//     "&response_format=json";
 
-//   if (!token) {
-//     token = await obtenerSessionToken();
-//   }
+//   const res = await fetch(url);
 
-//   console.log("Token listo:", token);
+//   const data = await res.json();
+
+//   // console.log(data);
 // }
 
-// iniciar();
+// async function listarArchivos2(session_token) {
+//   const url =
+//     "https://www.mediafire.com/api/1.5/folder/get_content.php" +
+//     "?session_token=" +
+//     tokken +
+//     "&folder_key=myfiles" +
+//     "&response_format=json";
 
-async function listarArchivos2(session_token) {
-  const url =
-    "https://www.mediafire.com/api/1.5/folder/get_content.php" +
-    "?session_token=" +
-    tokken +
-    "&folder_key=myfiles" +
-    "&response_format=json";
+//   const res = await fetch(url);
 
-  const res = await fetch(url);
+//   const data = await res.json();
 
-  const data = await res.json();
-
-  //console.log(data.response.folder_content.files);
-  console.log(data.response.folder_content.folders[3]);
-}
+//   //console.log(data.response.folder_content.files);
+//   // console.log(data.response.folder_content.folders[3]);
+// }
 
 async function listarArchivos(folder_key) {
   const token = localStorage.getItem("mediafire_token");
@@ -202,6 +164,7 @@ async function listarArchivos(folder_key) {
   const res = await fetch(url);
 
   const data = await res.json();
+  //console.log(data);
   //console.log(data.response.folder_content.folders.folderkey);
 
   const archivos =
@@ -215,7 +178,7 @@ async function listarArchivos(folder_key) {
 
   archivos.forEach((file) => {
     const tr = document.createElement("tr");
-    console.log(file.files);
+    // console.log(file.files);
 
     tr.innerHTML = `
 <td>📄 ${file.filename}</td>
@@ -288,96 +251,96 @@ async function cargarArchivos(token) {
   const data = await res.json();
   let carpetas = data.response.folder_content.folders;
   carpetas.forEach((carpeta) => {
-    console.log(carpeta.name);
+    // console.log(carpeta.name);
   });
   //console.log(data.response.folder_content.folders);
 
   mostrarArchivosMediafire(data);
 }
 
-async function listarCarpetas(folder_key) {
-  const token = localStorage.getItem("mediafire_token");
+// async function listarCarpetas(folder_key) {
+//   const token = localStorage.getItem("mediafire_token");
 
-  const url =
-    "https://www.mediafire.com/api/1.5/folder/get_content.php" +
-    "?session_token=" +
-    tokken +
-    "&folder_key=" +
-    folder_key +
-    "&response_format=json";
+//   const url =
+//     "https://www.mediafire.com/api/1.5/folder/get_content.php" +
+//     "?session_token=" +
+//     tokken +
+//     "&folder_key=" +
+//     folder_key +
+//     "&response_format=json";
 
-  const res = await fetch(url);
+//   const res = await fetch(url);
 
-  const data = await res.json();
+//   const data = await res.json();
 
-  const carpetas = data.response.folder_content.folders;
+//   const carpetas = data.response.folder_content.folders;
 
-  carpetas.forEach((carpeta) => {
-    console.log("📁", carpeta.name);
-  });
-}
+//   carpetas.forEach((carpeta) => {
+//     // console.log("📁", carpeta.name);
+//   });
+// }
 
 //listarCarpetas("myfiles");
 
-function crearNodo(carpeta) {
-  const details = document.createElement("details");
+// function crearNodo(carpeta) {
+//   const details = document.createElement("details");
 
-  const summary = document.createElement("summary");
+//   const summary = document.createElement("summary");
 
-  summary.textContent = "📁 " + carpeta.name;
+//   summary.textContent = "📁 " + carpeta.name;
 
-  details.appendChild(summary);
+//   details.appendChild(summary);
 
-  summary.onclick = () => cargarSubcarpetas(carpeta.folderkey, details);
+//   summary.onclick = () => cargarSubcarpetas(carpeta.folderkey, details);
 
-  return details;
-}
+//   return details;
+// }
 
 //const token = localStorage.getItem("mediafire_token");
 
-async function cargarCarpetas(folder_key, parentElement) {
-  const url =
-    "https://www.mediafire.com/api/1.5/folder/get_content.php" +
-    "?session_token=" +
-    tokken +
-    "&folder_key=" +
-    folder_key +
-    "&response_format=json";
+// async function cargarCarpetas(folder_key, parentElement) {
+//   const url =
+//     "https://www.mediafire.com/api/1.5/folder/get_content.php" +
+//     "?session_token=" +
+//     tokken +
+//     "&folder_key=" +
+//     folder_key +
+//     "&response_format=json";
 
-  const res = await fetch(url);
+//   const res = await fetch(url);
 
-  const data = await res.json();
+//   const data = await res.json();
 
-  const carpetas = data.response.folder_content.folders;
+//   const carpetas = data.response.folder_content.folders;
 
-  carpetas.forEach((carpeta) => {
-    const nodo = document.createElement("div");
-    nodo.className = "node folder";
+//   carpetas.forEach((carpeta) => {
+//     const nodo = document.createElement("div");
+//     nodo.className = "node folder";
 
-    nodo.innerHTML = "📁 " + carpeta.name;
+//     nodo.innerHTML = "📁 " + carpeta.name;
 
-    const hijos = document.createElement("div");
-    hijos.className = "children";
+//     const hijos = document.createElement("div");
+//     hijos.className = "children";
 
-    nodo.appendChild(hijos);
+//     nodo.appendChild(hijos);
 
-    nodo.onclick = async (e) => {
-      e.stopPropagation();
+//     nodo.onclick = async (e) => {
+//       e.stopPropagation();
 
-      if (!nodo.classList.contains("open")) {
-        nodo.classList.add("open");
+//       if (!nodo.classList.contains("open")) {
+//         nodo.classList.add("open");
 
-        if (hijos.childElementCount === 0) {
-          await cargarCarpetas(carpeta.folderkey, hijos);
-        }
-      } else {
-        nodo.classList.remove("open");
-      }
-    };
+//         if (hijos.childElementCount === 0) {
+//           await cargarCarpetas(carpeta.folderkey, hijos);
+//         }
+//       } else {
+//         nodo.classList.remove("open");
+//       }
+//     };
 
-    parentElement.appendChild(nodo);
-  });
-}
+//     parentElement.appendChild(nodo);
+//   });
+// }
 
 const tree = document.getElementById("treeview");
 
@@ -385,7 +348,7 @@ const tree = document.getElementById("treeview");
 
 //const token = localStorage.getItem("mediafire_token")
 
-async function cargarSubcarpetas(folder_key, container) {
+async function cargarSubcarpetas(folder_key, container, onError) {
   const url =
     "https://www.mediafire.com/api/1.5/folder/get_content.php" +
     "?session_token=" +
@@ -394,11 +357,44 @@ async function cargarSubcarpetas(folder_key, container) {
     folder_key +
     "&response_format=json";
 
-  const res = await fetch(url);
+  async function fetchSeguro(urls) {
+    try {
+      const res = await fetch(urls);
 
-  const data = await res.json();
+      if (!res.ok) {
+        throw new Error("HTTP " + res.status);
+      }
+
+      return await res.json();
+    } catch (e) {
+      console.error("Error:", e);
+
+      return null; // o throw e si prefieres
+    }
+  }
+
+  // try {
+  //   const res = await fetch(url);
+  //   if (!res.ok) {
+  //     throw new Error("HTTP " + res.status);
+  //   }
+
+  //   return await res.json();
+  // } catch (e) {
+  //   console.error(e);
+  // }
+
+  //const data = await res.json();
+  const data = await fetchSeguro(url);
+  if (!data) {
+    console.log("no se pudo acceder");
+    window.open("https://www.mediafire.com", "mf", "width=500,height=500");
+  } else {
+    //console.log(data);
+  }
 
   const carpetas = data.response.folder_content.folders || [];
+  const esUltimoNivel = carpetas.length === 0;
 
   carpetas.forEach((carpeta) => {
     const nodo = document.createElement("div");
@@ -415,6 +411,7 @@ async function cargarSubcarpetas(folder_key, container) {
     nodo.appendChild(hijos);
 
     carpetaDiv.onclick = async (e) => {
+      e.preventDefault(); // evita que navegue
       e.stopPropagation();
 
       if (nodo.classList.contains("open")) {
@@ -424,64 +421,44 @@ async function cargarSubcarpetas(folder_key, container) {
 
         if (hijos.childElementCount === 0) {
           await cargarSubcarpetas(carpeta.folderkey, hijos);
-          listarArchivos(carpeta.folderkey);
-          //console.log(hijos);
+          //listarArchivos(carpeta.folderkey);
         }
       }
     };
 
     container.appendChild(nodo);
   });
+  if (esUltimoNivel) {
+    const link = document.createElement("a");
+
+    link.href = "https://www.mediafire.com/folder/" + folder_key;
+    link.target = "_blank";
+    link.textContent = "🔗 Abrir carpeta";
+
+    container.appendChild(link);
+  }
 }
 
 const sInput = document.querySelector(".sToken");
 
 document.querySelector(".bToken").addEventListener("click", function () {
-  //cargarSubcarpetas("myfiles", tree);
-  console.log(sInput.value);
   if (sInput.value) {
     tokken = sInput.value;
     cargarSubcarpetas("myfiles", tree);
     localStorage.setItem("mfToken", tokken);
+  } else {
+    window.open("https://www.mediafire.com", "mf", "width=500,height=500");
   }
-  //tokken = document.querySelector(".sToken").ariaValueMax;
-  //cargarArchivos(tokken);
-  //console.log(this.id);
 });
 
 document.addEventListener("DOMContentLoaded", () => {
   const isToken = localStorage.getItem("mfToken");
   if (isToken) {
-    console.log(isToken);
     sInput.value = isToken;
+    setTimeout(() => {
+      btnCargar.click();
+    }, 2000);
   } else {
-    window.open(
-      "https://www.mediafire.com/application/get_session_token.php",
-      "mf",
-      "width=500,height=500",
-    );
+    window.open("https://www.mediafire.com", "mf", "width=500,height=500");
   }
 });
-
-//cargarSubcarpetas("myfiles", tree);
-
-// window.open(
-//   "https://www.mediafire.com/application/get_session_token.php",
-//   (target = "_blank"),
-// );
-
-// window.open(
-//   "https://www.mediafire.com/application/get_session_token.php",
-//   "mf",
-//   "width=500,height=500",
-// );
-
-// async function obtenerSessionToken() {
-//   const res = await fetch("http://127.0.0.1:5000/mediafire/token");
-
-//   const data = await res.json();
-
-//   console.log(data);
-// }
-
-// obtenerSessionToken();
