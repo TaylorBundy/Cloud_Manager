@@ -442,23 +442,151 @@ async function cargarSubcarpetas(folder_key, container, onError) {
 const sInput = document.querySelector(".sToken");
 
 document.querySelector(".bToken").addEventListener("click", function () {
+  iniciarMonitoreoClipboard();
   if (sInput.value) {
     tokken = sInput.value;
     cargarSubcarpetas("myfiles", tree);
     localStorage.setItem("mfToken", tokken);
   } else {
-    window.open("https://www.mediafire.com", "mf", "width=500,height=500");
+    //window.open("https://www.mediafire.com", "mf", "width=500,height=500");
+    mostrarModalConexion();
   }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
   const isToken = localStorage.getItem("mfToken");
+  iniciarMonitoreoClipboard();
   if (isToken) {
     sInput.value = isToken;
     setTimeout(() => {
       btnCargar.click();
     }, 2000);
   } else {
-    window.open("https://www.mediafire.com", "mf", "width=500,height=500");
+    //window.open("https://www.mediafire.com", "mf", "width=500,height=500");
+    mostrarModalConexion();
   }
 });
+
+function mostrarModalConexion() {
+  const overlay = document.createElement("div");
+  overlay.style = `
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.6);
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:9999;
+`;
+
+  const box = document.createElement("div");
+  box.style = `
+background:white;
+padding:20px;
+border-radius:10px;
+width:90%;
+max-width:400px;
+text-align:center;
+`;
+
+  const title = document.createElement("h3");
+  title.textContent = "Conectar MediaFire";
+
+  const text = document.createElement("p");
+  text.textContent =
+    "Inicia sesión en MediaFire y obtendremos el token automáticamente.";
+
+  // botón abrir
+  const btnOpen = document.createElement("button");
+  btnOpen.textContent = "🔗 Abrir MediaFire";
+
+  btnOpen.onclick = () => {
+    const popup = window.open(
+      "https://www.mediafire.com",
+      "mf",
+      "width=800,height=600",
+    );
+
+    // acá después conectas con tu lógica de token
+    //conectarConPopup(popup)
+  };
+
+  // botón cerrar
+  const btnClose = document.createElement("button");
+  btnClose.textContent = "Cancelar";
+  btnClose.style.marginTop = "10px";
+
+  btnClose.onclick = () => document.body.removeChild(overlay);
+
+  box.appendChild(title);
+  box.appendChild(text);
+  box.appendChild(btnOpen);
+  box.appendChild(document.createElement("br"));
+  box.appendChild(btnClose);
+
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+}
+
+// async function pegarDesdeClipboard() {
+//   //const input = document.getElementById("miInput")
+
+//   try {
+//     if (navigator.clipboard) {
+//       const texto = await navigator.clipboard.readText();
+//       //input.value = texto
+//       sInput.value = texto;
+//     } else {
+//       alert("Clipboard no soportado");
+//     }
+//   } catch (err) {
+//     console.error(err);
+//     alert("No se pudo leer el portapapeles");
+//   }
+// }
+
+let intervaloClipboard = null;
+
+async function iniciarMonitoreoClipboard() {
+  try {
+    // primer acceso (requiere interacción del usuario)
+    await navigator.clipboard.readText();
+
+    intervaloClipboard = setInterval(async () => {
+      try {
+        const texto = await navigator.clipboard.readText();
+
+        if (texto) {
+          //console.log("Clipboard:", texto);
+
+          // 👉 acción
+          manejarClipboard(texto);
+        }
+      } catch (e) {
+        console.error("Sin permiso:", e);
+      }
+    }, 3000); // cada 3 segundos
+  } catch (e) {
+    alert("Debes permitir acceso al portapapeles");
+  }
+}
+
+function detenerMonitoreoClipboard() {
+  if (intervaloClipboard) {
+    clearInterval(intervaloClipboard);
+    intervaloClipboard = null;
+    //console.log("⛔ Monitoreo detenido");
+  }
+}
+
+function manejarClipboard(texto) {
+  //console.log("Procesando:", texto);
+  sInput.value = texto;
+  detenerMonitoreoClipboard();
+
+  // ejemplo: guardar token
+  //localStorage.setItem("mediafire_token", texto)
+}
