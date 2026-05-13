@@ -69,7 +69,7 @@ def download():
 
     fs_id = request.args.get("fs_id")
 
-    url = "https://www.terabox.com/api/download"
+    url = "https://www.terabox.com/share/download"
 
     params = {
         "app_id": "250528",
