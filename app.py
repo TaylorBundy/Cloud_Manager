@@ -75,7 +75,7 @@ def download():
         "app_id": "250528",
         "jsToken": JSTOKEN,
         "target": f'["{fs_id}"]',
-        "dlink": 1
+        "dlink": 0
     }
 
     r = requests.get(
