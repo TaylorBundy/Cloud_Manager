@@ -2,7 +2,10 @@
 // "5f11dae8fe0e965c756f86c19b02a7c129d609f245245c6c3be4e35ff08f5e76100a7b6b9b0b123eeb2c2620cea03f3ecc3212c834c6d4ac07edaae38c1c0983";
 //"8456f6c5673fd7aff3888a48aca2c1c6b3fdc24fbbe931ecdd59077a3933a955d4f2c4e0f0e0b13fedb5af0bd61968ca7d7a81c9b4500a73fd68be38be05040a";
 let tokken;
+const NDUS = "Y2LRyrnteHui8ZhW2X2gzKRCEeyhICEYkF8LsqET";
 const btnCargar = document.querySelector(".bToken");
+const radiocheck = document.querySelectorAll(".check");
+let nCloud;
 const NUBES = {
   drive: {
     name: "Google Drive",
@@ -72,12 +75,23 @@ function conectar(nombre) {
   conectarNube(config);
 }
 
-const clouds = ["Google Drive", "Dropbox", "Mega", "MediaFire", "OneDrive"];
+const clouds = [
+  "Google Drive",
+  "Dropbox",
+  "Mega",
+  "MediaFire",
+  "OneDrive",
+  "TeraBox",
+];
 
 const cont = document.getElementById("clouds");
 
 clouds.forEach((c) => {
   const div = document.createElement("div");
+  const check = document.createElement("input");
+  check.className = `check`;
+  check.id = `check-${c}`;
+  check.type = "checkbox";
 
   div.className = "card";
 
@@ -95,11 +109,48 @@ Conectar
 `;
 
   cont.appendChild(div);
+  div.appendChild(check);
 });
 
 function connect(name) {
   alert("Conectar con " + name);
 }
+
+document.querySelectorAll(".check").forEach((check) => {
+  check.addEventListener("change", () => {
+    // si este fue activado
+    if (check.checked) {
+      // desactivar los demás
+      document.querySelectorAll(".check").forEach((otro) => {
+        if (otro !== check) {
+          otro.checked = false;
+        }
+      });
+    }
+  });
+  check.addEventListener("click", async (e) => {
+    if (check.id === "check-TeraBox") {
+      const isToken = localStorage.getItem("tbToken");
+      console.log(check.id);
+      nCloud = check.id;
+      sInput.value = isToken;
+    } else if (check.id === "check-MediaFire") {
+      nCloud = check.id;
+    }
+  });
+});
+
+// document.querySelectorAll(".check").forEach((radio) => {
+//   //radio.addEventListener("click", function () {
+//   radio.addEventListener("click", async (e) => {
+//     if (radio.id === "check-TeraBox") {
+//       console.log(radio.id);
+//       nCloud = radio.id;
+//     } else if (radio.id === "check-MediaFire") {
+//       nCloud = radio.id;
+//     }
+//   });
+// });
 
 document.querySelectorAll("#btn").forEach((button) => {
   button.addEventListener("click", function () {
@@ -439,27 +490,67 @@ async function cargarSubcarpetas(folder_key, container, onError) {
   }
 }
 
+async function archivos(dir = "/") {
+  try {
+    const url = "https://www.terabox.com/api/list";
+
+    const params = new URLSearchParams({
+      app_id: "250528",
+      jsToken: tokken,
+      dir: dir,
+      page: 1,
+      num: 100,
+    });
+
+    const res = await fetch(`${url}?${params.toString()}`, {
+      method: "GET",
+      headers: {
+        Cookie: `NDUS=${NDUS}`,
+        "User-Agent": "Mozilla/5.0",
+      },
+    });
+
+    const data = await res.json();
+
+    console.log(data);
+
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 const sInput = document.querySelector(".sToken");
 
 document.querySelector(".bToken").addEventListener("click", function () {
-  iniciarMonitoreoClipboard();
-  if (sInput.value) {
-    tokken = sInput.value;
-    cargarSubcarpetas("myfiles", tree);
-    localStorage.setItem("mfToken", tokken);
+  //iniciarMonitoreoClipboard();
+
+  if (nCloud == "check-TeraBox") {
+    treeview.innerHTML = "";
+    if (sInput.value) {
+      tokken = sInput.value;
+      cargarCarpeta("/", tree);
+      localStorage.setItem("tbToken", tokken);
+    }
   } else {
-    //window.open("https://www.mediafire.com", "mf", "width=500,height=500");
-    mostrarModalConexion();
+    if (sInput.value) {
+      tokken = sInput.value;
+      cargarSubcarpetas("myfiles", tree);
+      localStorage.setItem("mfToken", tokken);
+    } else {
+      //window.open("https://www.mediafire.com", "mf", "width=500,height=500");
+      mostrarModalConexion();
+    }
   }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
   const isToken = localStorage.getItem("mfToken");
-  iniciarMonitoreoClipboard();
+  //iniciarMonitoreoClipboard();
   if (isToken) {
     sInput.value = isToken;
     setTimeout(() => {
-      btnCargar.click();
+      //btnCargar.click();
     }, 2000);
   } else {
     //window.open("https://www.mediafire.com", "mf", "width=500,height=500");
@@ -589,4 +680,292 @@ function manejarClipboard(texto) {
 
   // ejemplo: guardar token
   //localStorage.setItem("mediafire_token", texto)
+}
+
+async function cargar() {
+  const res = await fetch("http://127.0.0.1:5000/archivos");
+  const data = await res.json();
+  console.log(data);
+
+  const lista = document.getElementById("lista");
+
+  data.list.forEach((file) => {
+    const div = document.createElement("div");
+
+    div.innerHTML = `
+            <b>${file.server_filename}</b>
+            <br>
+            Tamaño: ${file.size}
+            <hr>
+        `;
+
+    lista.appendChild(div);
+  });
+}
+//cargar();
+
+const tbody = document.querySelector("#tablaArchivos tbody");
+
+//btnCargar.addEventListener("click", cargarArchivos);
+
+async function cargarArchivos() {
+  try {
+    const res = await fetch("http://127.0.0.1:5000/archivos");
+
+    const data = await res.json();
+
+    console.log(data);
+
+    tbody.innerHTML = "";
+
+    data.list.forEach((archivo) => {
+      const tr = document.createElement("tr");
+
+      // Nombre
+      const tdNombre = document.createElement("td");
+      tdNombre.textContent = archivo.server_filename || "-";
+
+      // FolderKey / fs_id
+      const tdFolder = document.createElement("td");
+      tdFolder.textContent = archivo.fs_id || "-";
+
+      // Tamaño
+      const tdSize = document.createElement("td");
+      tdSize.textContent = formatBytes(archivo.size || 0);
+
+      // Tipo
+      const tdTipo = document.createElement("td");
+
+      if (archivo.isdir == 1) {
+        tdTipo.textContent = "Carpeta";
+      } else {
+        tdTipo.textContent = "Archivo";
+      }
+
+      // Descargar
+      const tdDownload = document.createElement("td");
+
+      const btn = document.createElement("button");
+      btn.textContent = "Descargar";
+
+      btn.addEventListener("click", () => {
+        console.log("Descargar:", archivo);
+
+        // abrir link si existe
+        if (archivo.dlink) {
+          window.open(archivo.dlink, "_blank");
+        }
+      });
+
+      tdDownload.appendChild(btn);
+
+      // agregar columnas
+      tr.appendChild(tdNombre);
+      tr.appendChild(tdFolder);
+      tr.appendChild(tdSize);
+      tr.appendChild(tdTipo);
+      tr.appendChild(tdDownload);
+
+      tbody.appendChild(tr);
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+function formatBytes(bytes) {
+  if (bytes === 0) return "0 Bytes";
+
+  const k = 1024;
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+}
+
+async function cargarCarpeta2(dir, container) {
+  try {
+    const res = await fetch(
+      `http://127.0.0.1:5000/archivos?dir=${encodeURIComponent(dir)}`,
+    );
+
+    const data = await res.json();
+
+    data.list.forEach((item) => {
+      console.log(item);
+      // CONTENEDOR
+      const nodo = document.createElement("div");
+      nodo.className = "tree-node";
+
+      const carpetaDiv = document.createElement("div");
+      carpetaDiv.className = "folder";
+      carpetaDiv.textContent = "📁 " + item.server_filename;
+
+      const hijos = document.createElement("div");
+      hijos.className = "children";
+
+      nodo.appendChild(carpetaDiv);
+      nodo.appendChild(hijos);
+
+      carpetaDiv.onclick = async (e) => {
+        e.preventDefault(); // evita que navegue
+        e.stopPropagation();
+        if (nodo.classList.contains("open")) {
+          nodo.classList.remove("open");
+        } else {
+          nodo.classList.add("open");
+
+          if (hijos.childElementCount === 0) {
+            await cargarCarpeta(item.fs_id, hijos);
+            //listarArchivos(carpeta.folderkey);
+          }
+        }
+      };
+
+      // CARPETA
+      if (item.isdir == 1) {
+        //div.className = "folder";
+        nodo.textContent = "📁 " + item.server_filename;
+
+        // hijos
+        const children = document.createElement("div");
+        children.className = "children";
+
+        let cargado = false;
+        carpetaDiv.onclick = async (e) => {
+          e.preventDefault(); // evita que navegue
+          e.stopPropagation();
+          if (nodo.classList.contains("open")) {
+            nodo.classList.remove("open");
+          } else {
+            nodo.classList.add("open");
+
+            if (hijos.childElementCount === 0) {
+              await cargarCarpeta(item.fs_id, hijos);
+              //listarArchivos(carpeta.folderkey);
+            }
+          }
+        };
+
+        // carpetaDiv.addEventListener("click", async (e) => {
+        //   e.stopPropagation();
+
+        //   // cargar solo una vez
+        //   if (!cargado) {
+        //     await cargarCarpeta(item.path, children);
+
+        //     cargado = true;
+        //   }
+
+        //   children.style.display =
+        //     children.style.display === "none" ? "block" : "none";
+        // });
+
+        container.appendChild(nodo);
+        //container.appendChild(children);
+      }
+
+      // ARCHIVO
+      else {
+        nodo.className = "file";
+
+        nodo.innerHTML = `
+          📄 ${item.server_filename}
+        `;
+
+        nodo.addEventListener("click", () => {
+          console.log(item);
+        });
+
+        container.appendChild(nodo);
+      }
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function cargarCarpeta(dir, container) {
+  try {
+    const res2 = await fetch(`${archivos(dir)}`);
+    const res = await fetch(
+      `http://127.0.0.1:5000/archivos?dir=${encodeURIComponent(dir)}`,
+    );
+
+    const data = await res.json();
+    const data2 = await res2.json();
+    //console.log(data);
+    console.log(data2);
+
+    data.list.forEach((item) => {
+      //console.log(item);
+      //console.log(item.server);
+      // NODO
+      const nodo = document.createElement("div");
+      nodo.className = "tree-node";
+
+      // =========================
+      // CARPETAS
+      // =========================
+      if (item.isdir == 1) {
+        const carpetaDiv = document.createElement("div");
+        carpetaDiv.className = "folder";
+        carpetaDiv.textContent = "📁 " + item.server_filename;
+
+        const hijos = document.createElement("div");
+        hijos.className = "children";
+
+        let cargado = false;
+
+        carpetaDiv.addEventListener("click", async (e) => {
+          e.stopPropagation();
+
+          // toggle
+          hijos.style.display =
+            hijos.style.display === "block" ? "none" : "block";
+
+          // cargar una sola vez
+          if (!cargado) {
+            const nuevaRuta =
+              dir === "/"
+                ? `/${item.server_filename}`
+                : `${dir}/${item.server_filename}`;
+            //console.log(nuevaRuta);
+
+            await cargarCarpeta(nuevaRuta, hijos);
+            //await cargarCarpeta(item.path, hijos);
+
+            cargado = true;
+          }
+        });
+
+        nodo.appendChild(carpetaDiv);
+        nodo.appendChild(hijos);
+
+        container.appendChild(nodo);
+      }
+
+      // =========================
+      // ARCHIVOS
+      // =========================
+      else {
+        const archivoDiv = document.createElement("div");
+
+        archivoDiv.className = "file";
+
+        archivoDiv.textContent = "📄 " + item.server_filename;
+
+        archivoDiv.addEventListener("click", () => {
+          console.log(item);
+        });
+
+        nodo.appendChild(archivoDiv);
+
+        container.appendChild(nodo);
+      }
+    });
+  } catch (error) {
+    console.error(error);
+  }
 }
