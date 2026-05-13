@@ -3,4 +3,3 @@ requests
 gitpython
 flask-cors
 python-dotenv
-render_template
