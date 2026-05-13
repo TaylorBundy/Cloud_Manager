@@ -2,6 +2,7 @@ from flask import Flask, jsonify, render_template, request
 import requests
 from flask_cors import CORS
 import os
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -74,7 +75,7 @@ def download():
     params = {
         "app_id": "250528",
         "jsToken": JSTOKEN,
-        "target": f'["{fs_id}"]',
+        "target": json.dumps([int(fs_id)]),
         "dlink": 0
     }
 
