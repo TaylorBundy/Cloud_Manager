@@ -985,7 +985,7 @@ async function cargarCarpeta(dir, container) {
   }
 }
 
-async function descargarArchivo(fs_id) {
+async function descargarArchivo2(fs_id) {
   try {
     const res = await fetch(`${API}/download?fs_id=${fs_id}`);
 
@@ -998,6 +998,26 @@ async function descargarArchivo(fs_id) {
 
     if (dlink) {
       window.open(dlink, "_blank");
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function descargarArchivo(fs_id) {
+  try {
+    const res = await fetch(`${API}/download?fs_id=${fs_id}`);
+
+    const data = await res.json();
+
+    console.log(data);
+
+    const dlink = data.list?.[0]?.dlink;
+
+    if (dlink) {
+      window.open(dlink, "_blank");
+    } else {
+      console.log("No se encontró dlink");
     }
   } catch (error) {
     console.error(error);

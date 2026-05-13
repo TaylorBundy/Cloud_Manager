@@ -69,12 +69,13 @@ def download():
 
     fs_id = request.args.get("fs_id")
 
-    url = "https://www.terabox.com/api/download"
+    url = "https://www.terabox.com/api/filemetas"
 
     params = {
         "app_id": "250528",
         "jsToken": JSTOKEN,
-        "fidlist": f"[{fs_id}]"
+        "target": f'["{fs_id}"]',
+        "dlink": 1
     }
 
     r = requests.get(
@@ -83,7 +84,7 @@ def download():
         params=params
     )
 
-    return jsonify(r.json())
+    return r.json()
 
 if __name__ == "__main__":
     #app.run(debug=True, port=5000)
