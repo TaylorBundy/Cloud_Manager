@@ -970,6 +970,7 @@ async function cargarCarpeta(dir, container) {
 
         btn.addEventListener("click", (e) => {
           e.stopPropagation();
+          console.log(item.fs_id);
 
           descargarArchivo(item.fs_id);
         });
@@ -1006,7 +1007,7 @@ async function descargarArchivo2(fs_id) {
 
 async function descargarArchivo(fs_id) {
   try {
-    const res = await fetch(`${API}/download?fs_id=${fs_id}`);
+    const res = await fetch(`http://127.0.0.1:5000/download?fs_id=${fs_id}`);
 
     const data = await res.json();
 
