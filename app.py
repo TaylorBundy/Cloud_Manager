@@ -16,9 +16,9 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0"
 }
 
-@app.route("/")
-def index():
-    return render_template("index.html")
+# @app.route("/")
+# def index():
+#     return render_template("index.html")
 
 @app.route("/archivos")
 def archivos():

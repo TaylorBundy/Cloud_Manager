@@ -5,6 +5,7 @@ let tokken;
 const NDUS = "Y2LRyrnteHui8ZhW2X2gzKRCEeyhICEYkF8LsqET";
 const btnCargar = document.querySelector(".bToken");
 const radiocheck = document.querySelectorAll(".check");
+const API = "https://cloud-manager-i2r7.onrender.com";
 let nCloud;
 const NUBES = {
   drive: {
@@ -892,9 +893,10 @@ async function cargarCarpeta2(dir, container) {
 async function cargarCarpeta(dir, container) {
   try {
     //const res2 = await fetch(`${archivos(dir)}`);
-    const res = await fetch(
-      `http://127.0.0.1:5000/archivos?dir=${encodeURIComponent(dir)}`,
-    );
+    // const res = await fetch(
+    //   `http://127.0.0.1:5000/archivos?dir=${encodeURIComponent(dir)}`,
+    // );
+    const res = await fetch(`${API}/archivos?dir=${encodeURIComponent(dir)}`);
 
     const data = await res.json();
     //const data2 = await res2.json();
