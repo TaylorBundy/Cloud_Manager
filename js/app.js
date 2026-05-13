@@ -502,12 +502,14 @@ async function archivos(dir = "/") {
       num: 100,
     });
 
+    const HEADERS = {
+      Cookie: `NDUS=${NDUS}`,
+      "User-Agent": "Mozilla/5.0",
+    };
+
     const res = await fetch(`${url}?${params.toString()}`, {
       method: "GET",
-      headers: {
-        Cookie: `NDUS=${NDUS}`,
-        "User-Agent": "Mozilla/5.0",
-      },
+      credentials: "include",
     });
 
     const data = await res.json();
@@ -529,6 +531,7 @@ document.querySelector(".bToken").addEventListener("click", function () {
     treeview.innerHTML = "";
     if (sInput.value) {
       tokken = sInput.value;
+      archivos("/");
       cargarCarpeta("/", tree);
       localStorage.setItem("tbToken", tokken);
     }
@@ -888,15 +891,15 @@ async function cargarCarpeta2(dir, container) {
 
 async function cargarCarpeta(dir, container) {
   try {
-    const res2 = await fetch(`${archivos(dir)}`);
+    //const res2 = await fetch(`${archivos(dir)}`);
     const res = await fetch(
       `http://127.0.0.1:5000/archivos?dir=${encodeURIComponent(dir)}`,
     );
 
     const data = await res.json();
-    const data2 = await res2.json();
+    //const data2 = await res2.json();
     //console.log(data);
-    console.log(data2);
+    //console.log(data2);
 
     data.list.forEach((item) => {
       //console.log(item);
