@@ -64,6 +64,27 @@ def lista():
 
     return r.json()
 
+@app.route("/download")
+def download():
+
+    fs_id = request.args.get("fs_id")
+
+    url = "https://www.terabox.com/api/download"
+
+    params = {
+        "app_id": "250528",
+        "jsToken": JSTOKEN,
+        "fidlist": f"[{fs_id}]"
+    }
+
+    r = requests.get(
+        url,
+        headers=HEADERS,
+        params=params
+    )
+
+    return jsonify(r.json())
+
 if __name__ == "__main__":
     #app.run(debug=True, port=5000)
     app.run(host="0.0.0.0", debug=True, port=int(os.environ.get("PORT", 5000)))

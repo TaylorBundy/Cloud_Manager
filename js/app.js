@@ -532,7 +532,7 @@ document.querySelector(".bToken").addEventListener("click", function () {
     treeview.innerHTML = "";
     if (sInput.value) {
       tokken = sInput.value;
-      archivos("/");
+      //archivos("/");
       cargarCarpeta("/", tree);
       localStorage.setItem("tbToken", tokken);
     }
@@ -900,7 +900,7 @@ async function cargarCarpeta(dir, container) {
 
     const data = await res.json();
     //const data2 = await res2.json();
-    //console.log(data);
+    console.log(data);
     //console.log(data2);
 
     data.list.forEach((item) => {
@@ -964,12 +964,41 @@ async function cargarCarpeta(dir, container) {
         archivoDiv.addEventListener("click", () => {
           console.log(item);
         });
+        const btn = document.createElement("button");
 
+        btn.textContent = "Descargar";
+
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+
+          descargarArchivo(item.fs_id);
+        });
+
+        nodo.appendChild(btn);
         nodo.appendChild(archivoDiv);
 
         container.appendChild(nodo);
       }
     });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function descargarArchivo(fs_id) {
+  try {
+    const res = await fetch(`${API}/download?fs_id=${fs_id}`);
+
+    const data = await res.json();
+
+    console.log(data);
+
+    // link directo
+    const dlink = data.dlink;
+
+    if (dlink) {
+      window.open(dlink, "_blank");
+    }
   } catch (error) {
     console.error(error);
   }
